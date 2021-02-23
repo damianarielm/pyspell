@@ -18,11 +18,16 @@ with open(argumentos.diccionario) as file:
 def sugerir(palabra):
     print(f"{i}: La palabra '{palabra}' no esta en el diccionario.", end = "")
     sugerencias  = set()
-    sugerencias |= eliminar_caracteres(palabra, diccionario)
-    sugerencias |= insertar_espacios(palabra, diccionario)
-    sugerencias |= reemplazar_caracteres(palabra, diccionario)
-    sugerencias |= insertar_caracteres(palabra, diccionario)
-    sugerencias |= intercambiar_adyacentes(palabra, diccionario)
+    if argumentos.eliminar_caracteres:
+        sugerencias |= eliminar_caracteres(palabra, diccionario)
+    if argumentos.insertar_espacios:
+        sugerencias |= insertar_espacios(palabra, diccionario)
+    if argumentos.reemplazar_caracteres:
+        sugerencias |= reemplazar_caracteres(palabra, diccionario)
+    if argumentos.insertar_caracteres:
+        sugerencias |= insertar_caracteres(palabra, diccionario)
+    if argumentos.intercambiar_adyacentes:
+        sugerencias |= intercambiar_adyacentes(palabra, diccionario)
 
     sugerencias = {x for x in sugerencias if x in diccionario}
     if sugerencias:
