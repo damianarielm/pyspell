@@ -15,30 +15,40 @@ with open(argumentos.diccionario) as file:
     for palabra in file.read().splitlines():
         diccionario[palabra] = palabra
 
-def sugerir(palabra):
-    print(f"{i}: La palabra '{palabra}' no esta en el diccionario.", end = "")
-    sugerencias  = set()
-    if argumentos.eliminar_caracteres:
-        sugerencias |= eliminar_caracteres(palabra, diccionario)
-    if argumentos.insertar_espacios:
-        sugerencias |= insertar_espacios(palabra, diccionario)
-    if argumentos.reemplazar_caracteres:
-        sugerencias |= reemplazar_caracteres(palabra, diccionario)
-    if argumentos.insertar_caracteres:
-        sugerencias |= insertar_caracteres(palabra, diccionario)
-    if argumentos.intercambiar_adyacentes:
-        sugerencias |= intercambiar_adyacentes(palabra, diccionario)
+def sugerir(palabras):
+    posibilidades = set()
+    for palabra in palabras:
+        if argumentos.eliminar_caracteres:
+            posibilidades |= eliminar_caracteres(palabra, diccionario)
+        if argumentos.insertar_espacios:
+            posibilidades |= insertar_espacios(palabra, diccionario)
+        if argumentos.reemplazar_caracteres:
+            posibilidades |= reemplazar_caracteres(palabra, diccionario)
+        if argumentos.insertar_caracteres:
+            posibilidades |= insertar_caracteres(palabra, diccionario)
+        if argumentos.intercambiar_adyacentes:
+            posibilidades |= intercambiar_adyacentes(palabra, diccionario)
 
-    sugerencias = {x for x in sugerencias if x in diccionario}
+    sugerencias = {p for p in posibilidades if p in diccionario}
+    return posibilidades, sugerencias
+
+def mostrar_sugerencias(sugerencias, sugeridas):
     if sugerencias:
-        print(f" Quizas quizo decir: ")
         for palabra in sugerencias:
-            print(f"{palabra}, ", end = "")
+            if palabra not in sugeridas:
+                print(f"{palabra}, ", end = "")
+        print()
 
 with open(argumentos.entrada) as file:
     for i, linea in enumerate(file.read().splitlines(), 1):
         for palabra in linea.split():
             palabra = sub("[^a-zA-ZÀ-ÖØ-öø-ÿ]+", "", palabra.lower())
             if palabra not in diccionario:
-                sugerir(palabra)
-                print("\n")
+                print(f"\n{i}: La palabra '{palabra}' no esta en el diccionario.")
+                if len(palabra) < argumentos.longitud:
+                    posibilidades, sugeridas = sugerir({palabra})
+                    mostrar_sugerencias(sugeridas, [])
+                    if argumentos.busqueda_profunda:
+                        _, sugerencias = sugerir(posibilidades)
+                        print("Busqueda profunda:")
+                        mostrar_sugerencias(sugerencias, sugeridas)
