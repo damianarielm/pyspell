@@ -32,7 +32,7 @@ def intercambiar_adyacentes(palabra, diccionario):
         sugerencias.add(palabra[:i] + palabra[i+1] + palabra[i] + palabra[i+2:])
     return sugerencias
 
-def sugerir(palabras, argumentos, diccionario):
+def generar_posibilidades(palabras, argumentos, diccionario):
     posibilidades = set()
     for palabra in palabras:
         if argumentos.eliminar_caracteres:
@@ -45,7 +45,9 @@ def sugerir(palabras, argumentos, diccionario):
             posibilidades |= insertar_caracteres(palabra, diccionario)
         if argumentos.intercambiar_adyacentes:
             posibilidades |= intercambiar_adyacentes(palabra, diccionario)
+    return posibilidades
 
+def generar_sugerencias(posibilidades, diccionario):
     sugerencias = set()
     for p in posibilidades:
         if p in diccionario:
@@ -54,4 +56,4 @@ def sugerir(palabras, argumentos, diccionario):
             p1, p2 = p.split()
             if p1 in diccionario and p2 in diccionario:
                 sugerencias |= {p}
-    return posibilidades, sugerencias
+    return sugerencias
