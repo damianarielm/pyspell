@@ -21,10 +21,10 @@ def palabra_no_encontrada(palabra):
 
 argumentos = parse()
 
-diccionario = {}
+diccionario = set()
 with open(argumentos.diccionario) as file:
     for palabra in file.read().splitlines():
-        diccionario[palabra] = palabra
+        diccionario |= {palabra}
 
 with open(argumentos.entrada) as file:
     for i, linea in enumerate(file.read().splitlines(), 1):
