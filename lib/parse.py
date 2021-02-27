@@ -9,6 +9,8 @@ def parse():
                          help = "Archivo de diccionario.")
     parser.add_argument("-longitud", type = int, default = 15,
                         help = "Longitud maxima de palabras.")
+    parser.add_argument("-maximo", type = int, default = 5,
+                        help = "Cantidad maxima de sugerencias")
     parser.add_argument("-intercambiar_adyacentes", action = "store_false",
                         help = "Deshabilita intercambiar adyacentes.")
     parser.add_argument("-insertar_espacios", action = "store_false",

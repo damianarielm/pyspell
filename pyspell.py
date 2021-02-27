@@ -11,27 +11,28 @@ def mostrar_sugerencias(sugerencias, sugeridas):
         print("")
 
 def palabra_no_encontrada(palabra):
-    posibilidades = generar_posibilidades({palabra}, argumentos, diccionario)
-    sugeridas = generar_sugerencias(posibilidades, diccionario)
+    posibilidades = generar_posibilidades({palabra}, argumentos)
+    sugeridas = generar_sugerencias(posibilidades, diccionario, argumentos)
     mostrar_sugerencias(sugeridas, {})
     if argumentos.busqueda_profunda:
-        posibilidades = generar_posibilidades(posibilidades, argumentos, diccionario)
-        sugerencias = generar_sugerencias(posibilidades, diccionario)
+        posibilidades = generar_posibilidades(posibilidades, argumentos)
+        sugerencias = generar_sugerencias(posibilidades, diccionario, argumentos)
         mostrar_sugerencias(sugerencias, sugeridas)
 
-argumentos = parse()
+def generar_diccionario(archivo):
+    with open(archivo) as file:
+        return {palabra for palabra in file.read().splitlines()}
 
-diccionario = set()
-with open(argumentos.diccionario) as file:
-    for palabra in file.read().splitlines():
-        diccionario |= {palabra}
-
+argumentos  = parse()
+diccionario = generar_diccionario(argumentos.diccionario)
 with open(argumentos.entrada) as file:
     for i, linea in enumerate(file.read().splitlines(), 1):
         for palabra in linea.split():
-            palabra = sub("[^a-zA-ZÀ-ÖØ-öø-ÿ]+", "", palabra.lower())
+            palabra = sub("[^a-zá-úü]+", "", palabra.lower())
             if palabra not in diccionario:
                 print(f"{i}: La palabra '{palabra}'"
                        " no esta en el diccionario.")
                 if len(palabra) < argumentos.longitud:
                     palabra_no_encontrada(palabra)
+                else:
+                    print(f"Palabra demasiado larga.")

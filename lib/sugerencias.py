@@ -1,53 +1,36 @@
-abecedario = "abcdefghijklmnñopqrstuvwxyzáéíóúü"
+letras = "abcdefghijklmnñopqrstuvwxyzáéíóúü"
 
-def insertar_espacios(palabra, diccionario):
-    sugerencias = set()
-    for i in range(1, len(palabra)):
-        sugerencias.add(palabra[:i] + " " + palabra[i:])
-    return sugerencias
+def insertar_espacios(p):
+    return {p[:i] + " " + p[i:] for i in range(len(p))}
 
-def eliminar_caracteres(palabra, diccionario):
-    sugerencias = set()
-    for i in range(len(palabra)):
-        sugerencias.add(palabra[:i] + palabra[i + 1:])
-    return sugerencias
+def eliminar_caracteres(p):
+    return {p[:i] + p[i + 1:] for i in range(len(p))}
 
-def reemplazar_caracteres(palabra, diccionario):
-    sugerencias = set()
-    for i in range(len(palabra)):
-        for letra in abecedario:
-            sugerencias.add(palabra[:i] + letra + palabra[i + 1:])
-    return sugerencias
+def reemplazar_caracteres(p):
+    return {p[:i] + l + p[i + 1:] for i in range(len(p)) for l in letras}
 
-def insertar_caracteres(palabra, diccionario):
-    sugerencias = set()
-    for i in range(len(palabra)):
-        for letra in abecedario:
-            sugerencias.add(palabra[:i] + letra + palabra[i:])
-    return sugerencias
+def insertar_caracteres(p):
+    return {p[:i] + l + p[i:] for i in range(len(p)) for l in letras}
 
-def intercambiar_adyacentes(palabra, diccionario):
-    sugerencias = set()
-    for i in range(len(palabra) - 1):
-        sugerencias.add(palabra[:i] + palabra[i+1] + palabra[i] + palabra[i+2:])
-    return sugerencias
+def intercambiar_adyacentes(p):
+    return {p[:i] + p[i+1] + p[i] + p[i+2:] for i in range(len(p) - 1)}
 
-def generar_posibilidades(palabras, argumentos, diccionario):
+def generar_posibilidades(palabras, argumentos):
     posibilidades = set()
-    for palabra in palabras:
+    for p in palabras:
         if argumentos.eliminar_caracteres:
-            posibilidades |= eliminar_caracteres(palabra, diccionario)
+            posibilidades |= eliminar_caracteres(p)
         if argumentos.insertar_espacios:
-            posibilidades |= insertar_espacios(palabra, diccionario)
+            posibilidades |= insertar_espacios(p)
         if argumentos.reemplazar_caracteres:
-            posibilidades |= reemplazar_caracteres(palabra, diccionario)
+            posibilidades |= reemplazar_caracteres(p)
         if argumentos.insertar_caracteres:
-            posibilidades |= insertar_caracteres(palabra, diccionario)
+            posibilidades |= insertar_caracteres(p)
         if argumentos.intercambiar_adyacentes:
-            posibilidades |= intercambiar_adyacentes(palabra, diccionario)
+            posibilidades |= intercambiar_adyacentes(p)
     return posibilidades
 
-def generar_sugerencias(posibilidades, diccionario):
+def generar_sugerencias(posibilidades, diccionario, argumentos):
     sugerencias = set()
     for p in posibilidades:
         if p in diccionario:
@@ -56,4 +39,6 @@ def generar_sugerencias(posibilidades, diccionario):
             p1, p2 = p.split()
             if p1 in diccionario and p2 in diccionario:
                 sugerencias |= {p}
+        if len(sugerencias) >= argumentos.maximo:
+            return sugerencias
     return sugerencias
