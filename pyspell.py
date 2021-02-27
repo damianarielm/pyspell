@@ -33,7 +33,7 @@ def main():
         for i, linea in enumerate(file.read().splitlines(), 1):
             for palabra in linea.split():
                 p = sub("[^a-zá-úü]+", "", palabra.lower())
-                if p not in diccionario:
+                if p and p not in diccionario:
                     print(f"{i}: La palabra '{palabra}'"
                            " no está en el diccionario.")
                     if len(p) < argumentos.longitud:
